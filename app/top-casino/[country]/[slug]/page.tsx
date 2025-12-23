@@ -9,10 +9,13 @@ export default function TopCasinoSlugPage({
   params: { country: string; slug: string };
 }) {
   const country = decodeURIComponent(params.country).toLowerCase();
-  const slug = decodeURIComponent(params.slug);
+  const slug = decodeURIComponent(params.slug).toLowerCase();
 
-  const item = CASINOS.find((c) => c.country === country && c.slug === slug);
-  if (!item) return notFound();
+  const item = CASINOS.find(
+    (c) => c.country.toLowerCase() === country && c.slug.toLowerCase() === slug
+  );
+
+  if (!item) notFound();
 
   const safeImage =
     item.imageUrl &&
@@ -20,10 +23,14 @@ export default function TopCasinoSlugPage({
       ? item.imageUrl
       : undefined;
 
+  const isRemote = safeImage?.startsWith("http");
+
   return (
     <main className="mx-auto max-w-3xl p-6">
       <nav className="mb-4 text-sm text-white/60">
-        <Link href="/" className="hover:text-white">Home</Link>
+        <Link href="/" className="hover:text-white">
+          Home
+        </Link>
         <span className="mx-2">/</span>
         <Link href={`/top-casino/${country}`} className="hover:text-white">
           Top Casino: {country}
@@ -42,6 +49,7 @@ export default function TopCasinoSlugPage({
               priority
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 768px"
+              unoptimized={isRemote}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-white/30">
@@ -55,12 +63,16 @@ export default function TopCasinoSlugPage({
             <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70">
               {item.country.toUpperCase()}
             </span>
-            <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70">
-             {(item.category ?? "UNKNOWN").toUpperCase()}
 
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70">
+              {(item.category ?? "UNKNOWN").toUpperCase()}
             </span>
+
             {(item.tags ?? []).map((t) => (
-              <span key={t} className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70">
+              <span
+                key={t}
+                className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70"
+              >
                 {t.toUpperCase()}
               </span>
             ))}
@@ -70,7 +82,9 @@ export default function TopCasinoSlugPage({
           <p className="mt-2 text-white/70">{item.description}</p>
 
           <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-white/70">
-            {typeof item.rating === "number" ? <span>⭐ Rating: {item.rating}</span> : null}
+            {typeof item.rating === "number" ? (
+              <span>⭐ Rating: {item.rating}</span>
+            ) : null}
             {item.bonus ? <span>🎁 Bonus: {item.bonus}</span> : null}
           </div>
 
@@ -91,8 +105,12 @@ export default function TopCasinoSlugPage({
             </div>
           ) : (
             <div className="mt-6 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-white/70">
-              No full content yet. Add <code className="rounded bg-white/10 px-1">content</code> in{" "}
-              <code className="rounded bg-white/10 px-1">src/data/casino.ts</code>.
+              No full content yet. Add{" "}
+              <code className="rounded bg-white/10 px-1">content</code> in{" "}
+              <code className="rounded bg-white/10 px-1">
+                src/data/casino.ts
+              </code>
+              .
             </div>
           )}
         </div>
