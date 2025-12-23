@@ -56,7 +56,8 @@ export default function TopCasinoSlugPage({
               {item.country.toUpperCase()}
             </span>
             <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70">
-              {item.category.toUpperCase()}
+             {(item.category ?? "UNKNOWN").toUpperCase()}
+
             </span>
             {(item.tags ?? []).map((t) => (
               <span key={t} className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70">
